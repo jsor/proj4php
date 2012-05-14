@@ -30,6 +30,11 @@ class Proj4phpProj
   public $projName= null;
   
   /**
+   * Property: projection
+   * The projection object for $this projection. */
+  public $projection = null;
+  
+  /**
    * Property: units
    * The units of the projection.  Values include 'm' and 'degrees'
    */
@@ -119,7 +124,7 @@ class Proj4phpProj
           $this->srsAuth = '';
           $this->srsProjNumber = $this->srsCode;
       }
-      $this->loadProjDefinition();
+	  $this->loadProjDefinition();
   }
   
 /**
@@ -141,13 +146,14 @@ class Proj4phpProj
       $filename = dirname(__FILE__). '/defs/' . strtoupper($this->srsAuth) . $this->srsProjNumber . '.php';
 	  try
 	  {
-        Proj4php::loadScript($filename);
+	    Proj4php::loadScript($filename);
 		$this->defsLoaded(); // succes
 	  }
 	  catch(Exception $e)
 	  {
 		$this->loadFromService(); // fail
 	  }
+	  
     }
 
 /**
@@ -178,7 +184,7 @@ class Proj4phpProj
  */
     public function defsLoaded() {
       $this->parseDefs();
-      $this->loadProjCode($this->projName);
+	  $this->loadProjCode($this->projName);
     }
     
 /**
@@ -216,7 +222,7 @@ class Proj4phpProj
     public function loadProjCode($projName) {
 	
       if (array_key_exists($projName,Proj4php::$proj)) {
-        $this->initTransforms();
+		$this->initTransforms();
         return;
       }
       //the filename for the projection code
@@ -225,7 +231,6 @@ class Proj4phpProj
 	  try
 	  {
 		Proj4php::loadScript($filename);
-		
 		$this->loadProjCodeSuccess($projName);
 	  }
 	  catch(Exception $e)
@@ -271,31 +276,32 @@ class Proj4phpProj
       }
     }
 
-/**
- * Function: initTransforms
- *    Finalize the initialization of the Proj object
- *
- */
+	/**
+	* Function: initTransforms
+	*    Finalize the initialization of the Proj object
+	*
+	*/
     public function initTransforms()
 	{
-      Proj4php::extend(Proj4php::$proj[$this->projName],$this);
+	  $this->projection = clone(Proj4php::$proj[$this->projName]);
+      Proj4php::extend($this->projection,$this);
       $this->init();
       $this->readyToUse = true;
 	}
 
 	public function init()
 	{
-		Proj4php::$proj[$this->projName]->init();
+		$this->projection->init();
 	}
 	
 	public function forward($pt)
 	{
-		return Proj4php::$proj[$this->projName]->forward($pt);
+		return $this->projection->forward($pt);
 	}
 	
 	public function inverse($pt)
 	{
-		return Proj4php::$proj[$this->projName]->inverse($pt);
+		return $this->projection->inverse($pt);
 	}
   
   
