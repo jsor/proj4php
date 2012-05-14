@@ -1,5 +1,5 @@
 <?php
-include_once("proj4php/proj4php.php");
+include_once("../proj4php/proj4php.php");
 
 $proj4 = new Proj4php();
 $projL93 = new Proj4phpProj('EPSG:2154',$proj4);
@@ -10,7 +10,7 @@ $projLSud = new Proj4phpProj('EPSG:27563',$proj4);
 // GPS
 // latitude        longitude
 // 48,831938       2,355781
-// 48°49'54.977''  2°21'20.812''
+// 48Â°49'54.977''  2Â°21'20.812''
 //
 // L93
 // 652709.401   6859290.946
