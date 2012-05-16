@@ -6,25 +6,29 @@
  *                      and Richard Greenwood rich@greenwoodma$p->com 
  * License: LGPL as per: http://www.gnu.org/copyleft/lesser.html 
  */
-class Proj4phpProjSterea {
+class Proj4phpProjSterea extends Proj4phpProjGauss {
 
     protected $dependsOn = 'gauss';
 
     /**
      *
-     * @return type 
+     * @return void 
      */
     public function init() {
-        Proj4php::$proj['gauss']->init->apply( $this );
+        
         if( !$this->rc ) {
             Proj4php::reportError( "sterea:init:E_ERROR_0" );
             return;
         }
+        
         $this->sinc0 = sin( $this->phic0 );
         $this->cosc0 = cos( $this->phic0 );
         $this->R2 = 2.0 * $this->rc;
+        
         if( !$this->title )
             $this->title = "Oblique Stereographic Alternative";
+        
+        parent::init();
     }
 
     /**
