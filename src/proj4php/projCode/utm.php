@@ -25,8 +25,6 @@
   Printing Office, Washington D.C., 1989.
 *******************************************************************************/
 
-require_once('tmerc.php');
-
 /**
   Initialize Transverse Mercator projection
  */
@@ -38,13 +36,13 @@ class Proj4phpProjUtm extends Proj4phpProjTmerc {
     
     /**
      *
-     * @return boolean 
+     * @return void 
      */
     public function init() {
         
         if( !isset($this->zone) ) {
             Proj4php::reportError( "utm:init: zone must be specified for UTM" );
-            return false;
+            return;
         }
         
         $this->lat0 = 0.0;
@@ -54,8 +52,6 @@ class Proj4phpProjUtm extends Proj4phpProjTmerc {
         $this->k0 = 0.9996;
         
         parent::init();
-        
-        return true;
     }
 
 }
