@@ -63,6 +63,12 @@ class Proj4phpProj {
      * are required.
      */
     public $localCS = false;
+    
+    /**
+     *
+     * @var type 
+     */
+    protected $wktRE = '/^(\w+)\[(.*)\]$/';
 
     /**
      * Constructor: initialize
@@ -281,8 +287,7 @@ class Proj4phpProj {
         $this->init();
         
         // initiate depending class
-        $dependsOn = isset($this->projection->dependsOn) && !empty($this->projection->dependsOn) ? $this->projection->dependsOn : false;
-        if( $dependsOn ) {
+        if( false !== ($dependsOn = isset($this->projection->dependsOn) && !empty($this->projection->dependsOn) ? $this->projection->dependsOn : false) ) {
             Proj4php::extend( Proj4php::$proj[$dependsOn], $this->projection) && 
             Proj4php::$proj[$dependsOn]->init() &&
             Proj4php::extend( $this->projection, Proj4php::$proj[$dependsOn] );
@@ -291,14 +296,27 @@ class Proj4phpProj {
         $this->readyToUse = true;
     }
 
+    /**
+     * 
+     */
     public function init() {
         $this->projection->init();
     }
 
+    /**
+     *
+     * @param type $pt
+     * @return type 
+     */
     public function forward( $pt ) {
         return $this->projection->forward( $pt );
     }
 
+    /**
+     *
+     * @param type $pt
+     * @return type 
+     */
     public function inverse( $pt ) {
         return $this->projection->inverse( $pt );
     }
@@ -308,8 +326,6 @@ class Proj4phpProj {
      * Parses a WKT string to get initialization parameters
      *
      */
-    protected $wktRE = '/^(\w+)\[(.*)\]$/';
-
     public function parseWKT( $wkt ) {
         
         if( false === ($match = preg_match( $this->wktRE, $wkt, $wktMatch )) )
@@ -565,8 +581,7 @@ class Proj4phpProj {
 
     /**
      * Function: deriveConstants
-     * Sets several derived constant values and initialization of datum and ellipse
-     *     parameters.
+     * Sets several derived constant values and initialization of datum and ellipse parameters.
      *
      */
     public function deriveConstants() {
