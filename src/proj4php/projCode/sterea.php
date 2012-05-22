@@ -6,10 +6,10 @@
  *                      and Richard Greenwood rich@greenwoodma$p->com 
  * License: LGPL as per: http://www.gnu.org/copyleft/lesser.html 
  */
-class Proj4phpProjSterea extends Proj4phpProjGauss {
+class Proj4phpProjSterea {
 
     protected $dependsOn = 'gauss';
-
+    
     /**
      *
      * @return void 
@@ -27,8 +27,6 @@ class Proj4phpProjSterea extends Proj4phpProjGauss {
         
         if( !$this->title )
             $this->title = "Oblique Stereographic Alternative";
-        
-        parent::init();
     }
 
     /**
@@ -39,7 +37,7 @@ class Proj4phpProjSterea extends Proj4phpProjGauss {
     public function forward( $p ) {
         
         $p->x = Proj4php::$common->adjust_lon( $p->x - $this->long0 ); /* adjust del longitude */
-        Proj4php::$proj['gauss']->forward->apply( $this, array( $p ) );
+        $p = Proj4php::$proj['gauss']->forward( $p );
         $sinc = sin( $p->y );
         $cosc = cos( $p->y );
         $cosl = cos( $p->x );
@@ -82,7 +80,7 @@ class Proj4phpProjSterea extends Proj4phpProjGauss {
 
         $p->x = $lon;
         $p->y = $lat;
-        Proj4php::$proj['gauss']->inverse->apply( $this, array( $p ) );
+        $p = Proj4php::$proj['gauss']->inverse( $p );
         $p->x = Proj4php::$common->adjust_lon( $p->x + $this->long0 ); /* adjust longitude to CM */
         
         return $p;

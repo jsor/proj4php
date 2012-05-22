@@ -28,7 +28,7 @@
 /**
   Initialize Transverse Mercator projection
  */
-class Proj4phpProjUtm extends Proj4phpProjTmerc {
+class Proj4phpProjUtm {
 
     public $dependsOn = 'tmerc';
     
@@ -50,10 +50,25 @@ class Proj4phpProjUtm extends Proj4phpProjTmerc {
         $this->x0 = 500000.0;
         $this->y0 = $this->utmSouth ? 10000000.0 : 0.0;
         $this->k0 = 0.9996;
-        
-        parent::init();
+    }
+    
+    /**
+     *
+     * @param type $p
+     * @return type 
+     */
+    public function forward( $p ) {
+        return Proj4php::$proj['tmerc']->forward( $p );
     }
 
+    /**
+     *
+     * @param type $p
+     * @return type 
+     */
+    public function inverse( $p ) {
+        return Proj4php::$proj['tmerc']->inverse( $p );
+    }
 }
 
 Proj4php::$proj['utm'] = new Proj4phpProjUtm();
