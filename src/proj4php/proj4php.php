@@ -176,11 +176,11 @@ class Proj4php {
     public function transform( $source, $dest, $point ) {
         
         if( !$source->readyToUse ) {
-            $this->reportError( "Proj4php initialization for:" . $source->srsCode . " not yet complete" );
+            self::reportError( "Proj4php initialization for:" . $source->srsCode . " not yet complete" );
             return $point;
         }
         if( !$dest->readyToUse ) {
-            $this->reportError( "Proj4php initialization for:" . $dest->srsCode . " not yet complete" );
+            self::reportError( "Proj4php initialization for:" . $dest->srsCode . " not yet complete" );
             return $point;
         }
         
@@ -390,7 +390,7 @@ class Proj4php {
      * An internal method to report errors back to user. 
      * Override this in applications to report error messages or throw exceptions.
      */
-    public function reportError( $msg ) {
+    public static function reportError( $msg ) {
         //console.log(msg);
         echo $msg . "<br />\n";
     }
@@ -399,7 +399,7 @@ class Proj4php {
      * Function : loadScript
      * adapted from original. PHP is simplier.
      */
-    public function loadScript( $filename, $onload = null, $onfail = null, $loadCheck = null ) {
+    public static function loadScript( $filename, $onload = null, $onfail = null, $loadCheck = null ) {
         
         if( stripos($filename, 'http://') !== false ) {
             return @file_get_contents($filename);
@@ -427,7 +427,7 @@ class Proj4php {
      * Returns:
      * {Object} The destination object.
      */
-    public function extend( $destination, $source ) {
+    public static function extend( $destination, $source ) {
         if( $source != null )
             foreach( $source as $key => $value ) {
                 $destination->$key = $value;
