@@ -197,7 +197,6 @@ class Proj4php {
         /*
         if( ($source->srsProjNumber == "900913" && $dest->datumCode != "WGS84") ||
             ($dest->srsProjNumber == "900913" && $source->datumCode != "WGS84") ) {
-            #dbg('Workaround for Spherical Mercator', false);
             $wgs84 = Proj4php::$WGS84; // DONT KNOW WHAT YET
             $this->transform( $source, $wgs84, $point );
             $source = $wgs84;
@@ -435,29 +434,4 @@ class Proj4php {
         return $destination;
     }
 
-}
-
-
-/**
- * dbg()
- * Helper function for faster debugging...
- * 
- * @param mixed $var
- * @param bool $die Exit script yes/no. Default yes.
- * @return void
- */
-if( !function_exists('dbg') ) {
-    function dbg( $var, $die = true ) {
-
-        if(is_array($var) || is_object($var))
-        { echo "<pre>"; print_r($var); }
-        else if (is_bool($var))
-        { echo "<pre>"; var_dump($var); }
-        else
-        echo $var . '<br>';
-
-        if( $die === TRUE ) {
-            die();
-        }
-    }
 }

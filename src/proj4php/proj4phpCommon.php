@@ -9,8 +9,8 @@
  */
 class Proj4phpCommon {
 
-    public $PI = 3.141592653589793238; //Math.PI,
-    public $HALF_PI = 1.570796326794896619; //Math.PI*0.5,
+    public $PI = M_PI; #3.141592653589793238; //Math.PI,
+    public $HALF_PI = M_PI_2; #1.570796326794896619; //Math.PI*0.5,
     public $TWO_PI = 6.283185307179586477; //Math.PI*2,
     public $FORTPI = 0.78539816339744833;
     public $R2D = 57.29577951308232088;
@@ -69,10 +69,11 @@ class Proj4phpCommon {
      * @return type
      */
     public function msfnz( $eccent, $sinphi, $cosphi ) {
+        
         $con = $eccent * $sinphi;
+        
         return $cosphi / (sqrt( 1.0 - $con * $con ));
     }
-
 
     /**
      * Function to compute the constant small t for use in the forward
@@ -85,10 +86,12 @@ class Proj4phpCommon {
      * @return type
      */
     public function tsfnz( $eccent, $phi, $sinphi ) {
+        
         $con = $eccent * $sinphi;
         $com = 0.5 * $eccent;
         $con = pow( ((1.0 - $con) / (1.0 + $con) ), $com );
-        return (tan( .5 * ($this->HALF_PI - $phi) ) / $con);
+        
+        return (tan( .5 * (M_PI_2 - $phi) ) / $con);
     }
 
     /**
@@ -102,16 +105,19 @@ class Proj4phpCommon {
      * @return type
      */
     public function phi2z( $eccent, $ts ) {
+        
         $eccnth = .5 * $eccent;
-        $phi = $this->HALF_PI - 2 * atan( $ts );
+        $phi = M_PI_2 - 2 * atan( $ts );
+        
         for( $i = 0; $i <= 15; $i++ ) {
             $con = $eccent * sin( $phi );
-            $dphi = $this->HALF_PI - 2 * atan( $ts * (pow( ((1.0 - $con) / (1.0 + $con) ), $eccnth )) ) - $phi;
+            $dphi = M_PI_2 - 2 * atan( $ts * (pow( ((1.0 - $con) / (1.0 + $con) ), $eccnth )) ) - $phi;
             $phi += $dphi;
             if( abs( $dphi ) <= .0000000001 )
                 return $phi;
         }
         assert( "false; /* phi2z has NoConvergence */" );
+        
         return (-9999);
     }
 
@@ -124,12 +130,15 @@ class Proj4phpCommon {
      * @return type
      */
     public function qsfnz( $eccent, $sinphi ) {
+        
         if( $eccent > 1.0e-7 ) {
+            
             $con = $eccent * $sinphi;
+            
             return (( 1.0 - $eccent * $eccent) * ($sinphi / (1.0 - $con * $con) - (.5 / $eccent) * log( (1.0 - $con) / (1.0 + $con) )));
-        } else {
-            return(2.0 * $sinphi);
         }
+        
+        return (2.0 * $sinphi);
     }
 
     /**
@@ -139,10 +148,15 @@ class Proj4phpCommon {
      * @return type
      */
     public function asinz( $x ) {
-        if( abs( $x ) > 1.0 ) {
-            $x = ($x > 1.0) ? 1.0 : -1.0;
-        }
-        return asin( $x );
+        
+        return asin( 
+            abs( $x ) > 1.0 ? ($x > 1.0 ? 1.0 : -1.0) : $x 
+        );
+        
+        #if( abs( $x ) > 1.0 ) {
+        #    $x = ($x > 1.0) ? 1.0 : -1.0;
+        #}
+        #return asin( $x );
     }
 
     /**
@@ -152,7 +166,7 @@ class Proj4phpCommon {
      * @return type
      */
     public function e0fn( $x ) {
-        return(1.0 - 0.25 * $x * (1.0 + $x / 16.0 * (3.0 + 1.25 * $x)));
+        return (1.0 - 0.25 * $x * (1.0 + $x / 16.0 * (3.0 + 1.25 * $x)));
     }
 
     /**
@@ -161,7 +175,7 @@ class Proj4phpCommon {
      * @return type
      */
     public function e1fn( $x ) {
-        return(0.375 * $x * (1.0 + 0.25 * $x * (1.0 + 0.46875 * $x)));
+        return (0.375 * $x * (1.0 + 0.25 * $x * (1.0 + 0.46875 * $x)));
     }
 
     /**
@@ -170,7 +184,7 @@ class Proj4phpCommon {
      * @return type
      */
     public function e2fn( $x ) {
-        return(0.05859375 * $x * $x * (1.0 + 0.75 * $x));
+        return (0.05859375 * $x * $x * (1.0 + 0.75 * $x));
     }
 
     /**
@@ -179,7 +193,7 @@ class Proj4phpCommon {
      * @return type
      */
     public function e3fn( $x ) {
-        return($x * $x * $x * (35.0 / 3072.0));
+        return ($x * $x * $x * (35.0 / 3072.0));
     }
 
     /**
@@ -192,7 +206,7 @@ class Proj4phpCommon {
      * @return type
      */
     public function mlfn( $e0, $e1, $e2, $e3, $phi ) {
-        return($e0 * $phi - $e1 * sin( 2.0 * $phi ) + $e2 * sin( 4.0 * $phi ) - $e3 * sin( 6.0 * $phi ));
+        return ($e0 * $phi - $e1 * sin( 2.0 * $phi ) + $e2 * sin( 4.0 * $phi ) - $e3 * sin( 6.0 * $phi ));
     }
 
     /**
@@ -202,7 +216,7 @@ class Proj4phpCommon {
      * @return type
      */
     public function srat( $esinp, $exp ) {
-        return(pow( (1.0 - $esinp) / (1.0 + $esinp), $exp ));
+        return (pow( (1.0 - $esinp) / (1.0 + $esinp), $exp ));
     }
 
     /**
@@ -212,9 +226,8 @@ class Proj4phpCommon {
      * @return type
      */
     public function sign( $x ) {
-        if( $x < 0.0 )
-            return(-1); else
-            return(1);
+        
+        return $x < 0.0 ? -1 : 1;
     }
 
     /**
@@ -224,8 +237,8 @@ class Proj4phpCommon {
      * @return type
      */
     public function adjust_lon( $x ) {
-        $x = (abs( $x ) < $this->PI) ? $x : ($x - ($this->sign( $x ) * $this->TWO_PI) );
-        return $x;
+        
+        return (abs( $x ) < M_PI) ? $x : ($x - ($this->sign( $x ) * $this->TWO_PI) );
     }
 
     /**
@@ -236,7 +249,9 @@ class Proj4phpCommon {
      * @return type
      */
     public function adjust_lat( $x ) {
-        $x = (abs( $x ) < $this->HALF_PI) ? $x : ($x - ($this->sign( $x ) * $this->PI) );
+        
+        $x = (abs( $x ) < M_PI_2) ? $x : ($x - ($this->sign( $x ) * M_PI) );
+        
         return $x;
     }
 
@@ -244,24 +259,32 @@ class Proj4phpCommon {
      * Latitude Isometrique - close to tsfnz ...
      * 
      * @param type $eccent
-     * @param type $phi
+     * @param float $phi
      * @param type $sinphi
      * @return string
      */
     public function latiso( $eccent, $phi, $sinphi ) {
-        if( abs( $phi ) > $this->HALF_PI )
+        
+        if( abs( $phi ) > M_PI_2 )
             return +NaN;
-        if( $phi == $this->HALF_PI )
+        if( $phi == M_PI_2 )
             return INF;
-        if( $phi == -1.0 * $this->HALF_PI )
+        if( $phi == -1.0 * M_PI_2 )
             return -1.0 * INF;
 
         $con = $eccent * $sinphi;
-        return log( tan( ($this->HALF_PI + $phi) / 2.0 ) ) + $eccent * log( (1.0 - $con) / (1.0 + $con) ) / 2.0;
+        
+        return log( tan( (M_PI_2 + $phi) / 2.0 ) ) + $eccent * log( (1.0 - $con) / (1.0 + $con) ) / 2.0;
     }
 
+    /**
+     * 
+     * @param type $x
+     * @param type $L
+     * @return type
+     */
     public function fL( $x, $L ) {
-        return 2.0 * atan( $x * exp( $L ) ) - $this->HALF_PI;
+        return 2.0 * atan( $x * exp( $L ) ) - M_PI_2;
     }
 
     /**
@@ -272,14 +295,17 @@ class Proj4phpCommon {
      * @return type
      */
     public function invlatiso( $eccent, $ts ) {
+        
         $phi = $this->fL( 1.0, $ts );
         $Iphi = 0.0;
         $con = 0.0;
+        
         do {
             $Iphi = $phi;
             $con = $eccent * sin( $Iphi );
             $phi = $this->fL( exp( $eccent * log( (1.0 + $con) / (1.0 - $con) ) / 2.0 ), $ts );
         } while( abs( $phi - $Iphi ) > 1.0e-12 );
+        
         return $phi;
     }
 
@@ -312,6 +338,7 @@ class Proj4phpCommon {
         $t *= $es;
         $en[3] = $t * ($this->C66 - $es * $this->C68);
         $en[4] = $t * $es * $this->C88;
+        
         return $en;
     }
 
@@ -324,9 +351,11 @@ class Proj4phpCommon {
      * @return type
      */
     public function pj_mlfn( $phi, $sphi, $cphi, $en ) {
+        
         $cphi *= $sphi;
         $sphi *= $sphi;
-        return($en[0] * $phi - $cphi * ($en[1] + $sphi * ($en[2] + $sphi * ($en[3] + $sphi * $en[4]))));
+        
+        return ($en[0] * $phi - $cphi * ($en[1] + $sphi * ($en[2] + $sphi * ($en[3] + $sphi * $en[4]))));
     }
 
     /**
@@ -337,8 +366,10 @@ class Proj4phpCommon {
      * @return type
      */
     public function pj_inv_mlfn( $arg, $es, $en ) {
-        $k = 1. / (1. - $es);
+        
+        $k = (float) 1 / (1 - $es);
         $phi = $arg;
+        
         for( $i = Proj4php::$common->MAX_ITER; $i; --$i ) { /* rarely goes over 2 iterations */
             $s = sin( $phi );
             $t = 1. - $es * $s * $s;
