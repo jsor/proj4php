@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Author : Julien Moquet
  * 
@@ -44,7 +45,7 @@ class Proj4phpCommon {
      * *	8th degree - accurate to < 1e-5 meters when used in conjuction
      * *		with typical major axis values.
      * *	Inverse determines phi to EPS (1e-11) radians, about 1e-6 seconds.
-     */    
+     */
     protected $C00 = 1.0;
     protected $C02 = .25;
     protected $C04 = .046875;
@@ -58,18 +59,31 @@ class Proj4phpCommon {
     protected $C68 = .00569661458333333333;
     protected $C88 = .3076171875;
 
-// Function to compute the constant small m which is the radius of
-//   a parallel of latitude, phi, divided by the semimajor axis.
-// -----------------------------------------------------------------
+    /**
+     * Function to compute the constant small m which is the radius of
+     * a parallel of latitude, phi, divided by the semimajor axis.
+     * 
+     * @param type $eccent
+     * @param type $sinphi
+     * @param type $cosphi
+     * @return type
+     */
     public function msfnz( $eccent, $sinphi, $cosphi ) {
         $con = $eccent * $sinphi;
         return $cosphi / (sqrt( 1.0 - $con * $con ));
     }
 
-// Function to compute the constant small t for use in the forward
-//   computations in the Lambert Conformal Conic and the Polar
-//   Stereographic projections.
-// -----------------------------------------------------------------
+
+    /**
+     * Function to compute the constant small t for use in the forward
+     * computations in the Lambert Conformal Conic and the Polar
+     * Stereographic projections.
+     * 
+     * @param type $eccent
+     * @param type $phi
+     * @param type $sinphi
+     * @return type
+     */
     public function tsfnz( $eccent, $phi, $sinphi ) {
         $con = $eccent * $sinphi;
         $com = 0.5 * $eccent;
@@ -77,11 +91,15 @@ class Proj4phpCommon {
         return (tan( .5 * ($this->HALF_PI - $phi) ) / $con);
     }
 
-    /** Function to compute the latitude angle, phi2, for the inverse of the
-      //   Lambert Conformal Conic and Polar Stereographic projections.
-      //
-      // rise up an assertion if there is no convergence.
-      // ----------------------------------------------------------------
+    /**
+     * Function to compute the latitude angle, phi2, for the inverse of the
+     * Lambert Conformal Conic and Polar Stereographic projections.
+     * 
+     * rise up an assertion if there is no convergence.
+     * 
+     * @param type $eccent
+     * @param type $ts
+     * @return type
      */
     public function phi2z( $eccent, $ts ) {
         $eccnth = .5 * $eccent;
@@ -97,10 +115,14 @@ class Proj4phpCommon {
         return (-9999);
     }
 
-    /* Function to compute constant small q which is the radius of a 
-      parallel of latitude, phi, divided by the semimajor axis.
-      ------------------------------------------------------------ */
-
+    /**
+     * Function to compute constant small q which is the radius of a 
+     * parallel of latitude, phi, divided by the semimajor axis.
+     * 
+     * @param type $eccent
+     * @param type $sinphi
+     * @return type
+     */
     public function qsfnz( $eccent, $sinphi ) {
         if( $eccent > 1.0e-7 ) {
             $con = $eccent * $sinphi;
@@ -110,9 +132,12 @@ class Proj4phpCommon {
         }
     }
 
-    /* Function to eliminate roundoff errors in asin
-      ---------------------------------------------- */
-
+    /**
+     * Function to eliminate roundoff errors in asin
+     * 
+     * @param type $x
+     * @return type
+     */
     public function asinz( $x ) {
         if( abs( $x ) > 1.0 ) {
             $x = ($x > 1.0) ? 1.0 : -1.0;
@@ -120,52 +145,109 @@ class Proj4phpCommon {
         return asin( $x );
     }
 
-// following functions from gctpc cproj.c for transverse mercator projections
+    /**
+     * following functions from gctpc cproj.c for transverse mercator projections
+     * 
+     * @param type $x
+     * @return type
+     */
     public function e0fn( $x ) {
         return(1.0 - 0.25 * $x * (1.0 + $x / 16.0 * (3.0 + 1.25 * $x)));
     }
 
+    /**
+     * 
+     * @param type $x
+     * @return type
+     */
     public function e1fn( $x ) {
         return(0.375 * $x * (1.0 + 0.25 * $x * (1.0 + 0.46875 * $x)));
     }
 
+    /**
+     * 
+     * @param type $x
+     * @return type
+     */
     public function e2fn( $x ) {
         return(0.05859375 * $x * $x * (1.0 + 0.75 * $x));
     }
 
+    /**
+     * 
+     * @param type $x
+     * @return type
+     */
     public function e3fn( $x ) {
         return($x * $x * $x * (35.0 / 3072.0));
     }
 
+    /**
+     * 
+     * @param type $e0
+     * @param type $e1
+     * @param type $e2
+     * @param type $e3
+     * @param type $phi
+     * @return type
+     */
     public function mlfn( $e0, $e1, $e2, $e3, $phi ) {
         return($e0 * $phi - $e1 * sin( 2.0 * $phi ) + $e2 * sin( 4.0 * $phi ) - $e3 * sin( 6.0 * $phi ));
     }
 
+    /**
+     * 
+     * @param type $esinp
+     * @param type $exp
+     * @return type
+     */
     public function srat( $esinp, $exp ) {
         return(pow( (1.0 - $esinp) / (1.0 + $esinp), $exp ));
     }
 
-// Function to return the sign of an argument
+    /**
+     * Function to return the sign of an argument
+     * 
+     * @param type $x
+     * @return type
+     */
     public function sign( $x ) {
         if( $x < 0.0 )
             return(-1); else
             return(1);
     }
 
-// Function to adjust longitude to -180 to 180; input in radians
+    /**
+     * Function to adjust longitude to -180 to 180; input in radians
+     * 
+     * @param type $x
+     * @return type
+     */
     public function adjust_lon( $x ) {
         $x = (abs( $x ) < $this->PI) ? $x : ($x - ($this->sign( $x ) * $this->TWO_PI) );
         return $x;
     }
 
-// IGNF - DGR : algorithms used by IGN France
-// Function to adjust latitude to -90 to 90; input in radians
+    /**
+     * IGNF - DGR : algorithms used by IGN France
+     * Function to adjust latitude to -90 to 90; input in radians
+     * 
+     * @param type $x
+     * @return type
+     */
     public function adjust_lat( $x ) {
         $x = (abs( $x ) < $this->HALF_PI) ? $x : ($x - ($this->sign( $x ) * $this->PI) );
         return $x;
     }
 
-// Latitude Isometrique - close to tsfnz ...
+    /**
+     * Latitude Isometrique - close to tsfnz ...
+     * 
+     * @param type $eccent
+     * @param type $phi
+     * @param type $sinphi
+     * @return string
+     */
     public function latiso( $eccent, $phi, $sinphi ) {
         if( abs( $phi ) > $this->HALF_PI )
             return +NaN;
@@ -182,7 +264,13 @@ class Proj4phpCommon {
         return 2.0 * atan( $x * exp( $L ) ) - $this->HALF_PI;
     }
 
-// Inverse Latitude Isometrique - close to ph2z
+    /**
+     * Inverse Latitude Isometrique - close to ph2z
+     * 
+     * @param type $eccent
+     * @param type $ts
+     * @return type
+     */
     public function invlatiso( $eccent, $ts ) {
         $phi = $this->fL( 1.0, $ts );
         $Iphi = 0.0;
@@ -195,16 +283,28 @@ class Proj4phpCommon {
         return $phi;
     }
 
-    // Grande Normale
+    /**
+     * Grande Normale
+     * 
+     * @param type $a
+     * @param type $e
+     * @param type $sinphi
+     * @return type
+     */
     public function gN( $a, $e, $sinphi ) {
         $temp = $e * $sinphi;
         return $a / sqrt( 1.0 - $temp * $temp );
     }
 
-    //code from the PROJ.4 pj_mlfn.c file;  this may be useful for other projections
+    /**
+     * code from the PROJ.4 pj_mlfn.c file;  this may be useful for other projections
+     * 
+     * @param type $es
+     * @return type
+     */
     public function pj_enfn( $es ) {
 
-        $en = array();
+        $en = array( );
         $en[0] = $this->C00 - $es * ($this->C02 + $es * ($this->C04 + $es * ($this->C06 + $es * $this->C08)));
         $en[1] = es * ($this->C22 - $es * ($this->C04 + $es * ($this->C06 + $es * $this->C08)));
         $t = $es * $es;
@@ -215,12 +315,27 @@ class Proj4phpCommon {
         return $en;
     }
 
+    /**
+     * 
+     * @param type $phi
+     * @param type $sphi
+     * @param type $cphi
+     * @param type $en
+     * @return type
+     */
     public function pj_mlfn( $phi, $sphi, $cphi, $en ) {
         $cphi *= $sphi;
         $sphi *= $sphi;
         return($en[0] * $phi - $cphi * ($en[1] + $sphi * ($en[2] + $sphi * ($en[3] + $sphi * $en[4]))));
     }
 
+    /**
+     * 
+     * @param type $arg
+     * @param type $es
+     * @param type $en
+     * @return type
+     */
     public function pj_inv_mlfn( $arg, $es, $en ) {
         $k = 1. / (1. - $es);
         $phi = $arg;
@@ -234,9 +349,9 @@ class Proj4phpCommon {
             if( abs( $t ) < Proj4php::$common->EPSLN )
                 return $phi;
         }
-        
+
         Proj4php::reportError( "cass:pj_inv_mlfn: Convergence error" );
-        
+
         return $phi;
     }
 
