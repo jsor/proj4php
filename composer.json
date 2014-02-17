@@ -1,0 +1,19 @@
+{
+    "name": "jsor/proj4php",
+    "type": "library",
+    "description": "LGPL public translation of proj4js for PHP",
+    "keywords": ["proj4", "projection", "geo"],
+    "homepage": "http://sourceforge.net/projects/proj4php/",
+    "license": "LGPL-3.0",
+    "authors": [
+        {"name": "Rodrigue VILLETARD", "homepage": "http://sourceforge.net/users/gorghoa", "role": "developer"},
+        {"name": "Moquet", "homepage": "http://sourceforge.net/users/julien2512", "role": "developer"},
+        {"name": "Jan Sorgalla", "email": "jsorgalla@googlemail.com", "role": "maintainer"}
+    ],
+    "require": {
+        "php": ">=5.1.0"
+    },
+    "autoload": {
+        "classmap": ["src/"]
+    }
+}
