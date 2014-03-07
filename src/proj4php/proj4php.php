@@ -186,8 +186,9 @@ class Proj4php {
         
         // Workaround for datum shifts towgs84, if either source or destination projection is not wgs84
         if ( isset($source->datum) && isset($dest->datum) && (
-            (($source->datum->datum_type == Proj4php::$common->PJD_3PARAM || $source->datum->datum_type == Proj4php::$common->PJD_7PARAM) && (isset($dest->datumCode) && $dest->datumCode != "WGS84")) ||
-            (($dest->datum->datum_type == Proj4php::$common->PJD_3PARAM || $dest->datum->datum_type == Proj4php::$common->PJD_7PARAM) && (isset($source->datumCode) && $source->datumCode != "WGS84")))) {
+            (($source->datum->datum_type == Proj4php::$common->PJD_3PARAM || $source->datum->datum_type == Proj4php::$common->PJD_7PARAM) || (isset($dest->datumCode) && $dest->datumCode != "WGS84")) ||
+            (($dest->datum->datum_type == Proj4php::$common->PJD_3PARAM || $dest->datum->datum_type == Proj4php::$common->PJD_7PARAM) || (isset($source->datumCode) && $source->datumCode != "WGS84")))) {
+            $source = new Proj4phpProj($source->srsCode); 
             $wgs84 = Proj4php::$WGS84;
             $this->transform($source, $wgs84, $point);
             $source = $wgs84;
