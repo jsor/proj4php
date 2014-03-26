@@ -146,16 +146,16 @@ class Proj4php {
     }
     
     /**
-     * 
+     *
      */
     public function __construct() {
-        
+
         $this->initWKTProjections();
         $this->initDefs();
         $this->initDatum();
         $this->initEllipsoid();
         $this->initPrimeMeridian();
-        
+
         self::$proj['longlat'] = new proj4phpLongLat();
         self::$proj['identity'] = new proj4phpLongLat();
         self::$common = new proj4phpCommon();
@@ -173,9 +173,8 @@ class Proj4php {
      * point - {Object} point to transform, may be geodetic (long, lat) or
      *     projected Cartesian (x,y), but should always have x,y properties.
      */
-    public function transform( $source, $dest, $point ) {
-        
-        if( !$source->readyToUse ) {
+    public function transform( $source, $dest, $point) {
+       if( !$source->readyToUse ) {
             self::reportError( "Proj4php initialization for:" . $source->srsCode . " not yet complete" );
             return $point;
         }
@@ -183,27 +182,23 @@ class Proj4php {
             self::reportError( "Proj4php initialization for:" . $dest->srsCode . " not yet complete" );
             return $point;
         }
-        
+
         // Workaround for datum shifts towgs84, if either source or destination projection is not wgs84
-        if ( isset($source->datum) && isset($dest->datum) && (
-            (($source->datum->datum_type == Proj4php::$common->PJD_3PARAM || $source->datum->datum_type == Proj4php::$common->PJD_7PARAM) || (isset($dest->datumCode) && $dest->datumCode != "WGS84")) ||
-            (($dest->datum->datum_type == Proj4php::$common->PJD_3PARAM || $dest->datum->datum_type == Proj4php::$common->PJD_7PARAM) || (isset($source->datumCode) && $source->datumCode != "WGS84")))) {
-            $source = new Proj4phpProj($source->srsCode); 
-            $wgs84 = Proj4php::$WGS84;
-            $this->transform($source, $wgs84, $point);
-            $source = $wgs84;
+        // WS, 2014/03/26 changed from recursive call of function transform to seperate function doTransform 
+        if (isset($source->datum) && isset($dest->datum) &&
+           ($source->datum->datum_type == Proj4php::$common->PJD_3PARAM || $source->datum->datum_type == Proj4php::$common->PJD_7PARAM || (isset($source->datumCode) && $source->datumCode != "WGS84")) &&
+           ($dest->datum->datum_type == Proj4php::$common->PJD_3PARAM || $dest->datum->datum_type == Proj4php::$common->PJD_7PARAM || (isset($dest->datumCode) && $dest->datumCode != "WGS84"))) {
+           $pointWGS84 = $this->doTransform($source,Proj4php::$WGS84, $point);
+           $point = $this->doTransform(Proj4php::$WGS84, $dest, $pointWGS84);
         }
-
-        // Workaround for Spherical Mercator => skipped in proj4js 1.1.0
-        /*
-        if( ($source->srsProjNumber == "900913" && $dest->datumCode != "WGS84") ||
-            ($dest->srsProjNumber == "900913" && $source->datumCode != "WGS84") ) {
-            $wgs84 = Proj4php::$WGS84; // DONT KNOW WHAT YET
-            $this->transform( $source, $wgs84, $point );
-            $source = $wgs84;
+        else
+        {
+           $point = $this->doTransform($source, $dest, $point);
         }
-        */
+        return $point;
+    }
 
+    public function doTransform( $source, $dest, $point ) {
         // DGR, 2010/11/12
         if( $source->axis != "enu" ) {
             $this->adjust_axis( $source, false, $point );
@@ -228,7 +223,7 @@ class Proj4php {
 
         // Convert datums if needed, and if possible.
         $point = $this->datum_transform( $source->datum, $dest->datum, $point );
-        
+
         // Adjust for the prime meridian if necessary
         if( isset( $dest->from_greenwich ) ) {
             $point->x -= $dest->from_greenwich;
@@ -253,7 +248,6 @@ class Proj4php {
 
         return $point;
     }
-    
 
     /** datum_transform()
       source coordinate system definition,
@@ -261,7 +255,7 @@ class Proj4php {
       point to transform in geodetic coordinates (long, lat, height)
      */
     public function datum_transform( $source, $dest, $point ) {
-        
+
         // Short cut if the datums are identical.
         if( $source->compare_datums( $dest ) ) {
             return $point; // in this case, zero is sucess,
