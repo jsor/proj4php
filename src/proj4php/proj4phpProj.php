@@ -116,17 +116,17 @@ class Proj4phpProj {
         }
         $this->srsCode = strtoupper( $srsCode );
         if( strpos( $this->srsCode, "EPSG" ) === 0 ) {
-            $this->srsCode = $this->srsCode;
+            $this->srsCode = $srsCode;
             $this->srsAuth = 'epsg';
             $this->srsProjNumber = substr( $this->srsCode, 5 );
             // DGR 2007-11-20 : authority IGNF
         } else if( strpos( $this->srsCode, "IGNF" ) === 0 ) {
-            $this->srsCode = $this->srsCode;
+            $this->srsCode = $srsCode;
             $this->srsAuth = 'IGNF';
             $this->srsProjNumber = substr( $this->srsCode, 5 );
             // DGR 2008-06-19 : pseudo-authority CRS for WMS
         } else if( strpos( $this->srsCode, "CRS" ) === 0 ) {
-            $this->srsCode = $this->srsCode;
+            $this->srsCode = $srsCode;
             $this->srsAuth = 'CRS';
             $this->srsProjNumber = substr( $this->srsCode, 4 );
         } else {
