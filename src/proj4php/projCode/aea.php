@@ -131,9 +131,9 @@ class Proj4phpProjAea {
                 $lat = $this->phi1z( $this->e3, $qs );
             } else {
                 if( $qs >= 0 ) {
-                    $lat = .5 * Proj4php::$Common->PI;
+                    $lat = .5 * Proj4php::$common->PI;
                 } else {
-                    $lat = -.5 * Proj4php::$Common->PI;
+                    $lat = -.5 * Proj4php::$common->PI;
                 }
             }
         } else {
