@@ -38,9 +38,9 @@ class Proj4phpProjSomerc {
         $this->R = $this->k0 * $semiMajorAxis * sqrt( 1 - $e2 ) / (1 - $e2 * pow( $sinPhy0, 2.0 ));
         $this->alpha = sqrt( 1 + $e2 / (1 - $e2) * pow( cos( $phy0 ), 4.0 ) );
         $this->b0 = asin( $sinPhy0 / $this->alpha );
-        $this->K = log( tan( $PI / 4.0 + $this->b0 / 2.0 ) )
+        $this->K = log( tan( Proj4php::$common->PI / 4.0 + $this->b0 / 2.0 ) )
                   - $this->alpha
-                  * log( tan( $PI / 4.0 + $phy0 / 2.0 ) )
+                  * log( tan( Proj4php::$common->PI / 4.0 + $phy0 / 2.0 ) )
                   + $this->alpha
                   * $e / 2
                   * log( (1 + $e * $sinPhy0)
@@ -53,7 +53,7 @@ class Proj4phpProjSomerc {
      * @return type 
      */
     public function forward( $p ) {
-        $Sa1 = log( tan( $PI / 4.0 - $p->y / 2.0 ) );
+        $Sa1 = log( tan( Proj4php::$common->PI / 4.0 - $p->y / 2.0 ) );
         $Sa2 = $this->e / 2.0
                   * log( (1 + $this->e * sin( $p->y ))
                             / (1 - $this->e * sin( $p->y )) );
@@ -93,7 +93,7 @@ class Proj4phpProjSomerc {
         $X = $p->y - $this->y0;
 
         $rotI = $Y / $this->R;
-        $rotB = 2 * (atan( exp( $X / $this->R ) ) - $PI / 4.0);
+        $rotB = 2 * (atan( exp( $X / $this->R ) ) - Proj4php::$common->PI / 4.0);
 
         $b = asin( cos( $this->b0 ) * sin( $rotB )
                   + sin( $this->b0 ) * cos( $rotB ) * cos( $rotI ) );
@@ -115,13 +115,13 @@ class Proj4phpProjSomerc {
             //S = log(tan(PI / 4.0 + phy / 2.0));
             $S = 1.0
                       / $this->alpha
-                      * (log( tan( $PI / 4.0 + $b / 2.0 ) ) - $this->K)
+                      * (log( tan( Proj4php::$common->PI / 4.0 + $b / 2.0 ) ) - $this->K)
                       + $this->e
-                      * log( tan( $PI / 4.0
+                      * log( tan( Proj4php::$common->PI / 4.0
                                           + asin( $this->e * sin( $phy ) )
                                           / 2.0 ) );
             $prevPhy = $phy;
-            $phy = 2.0 * atan( exp( $S ) ) - $PI / 2.0;
+            $phy = 2.0 * atan( exp( $S ) ) - Proj4php::$common->PI / 2.0;
         }
 
         $p->x = $lambda;
