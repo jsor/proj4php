@@ -234,7 +234,7 @@ class Proj4phpProj {
         try {
             Proj4php::loadScript( $filename );
             $this->loadProjCodeSuccess( $projName );
-            
+
         } catch ( Exception $e ) {
             $this->loadProjCodeFailure( $projName );
         }
@@ -281,18 +281,17 @@ class Proj4phpProj {
      *
      */
     public function initTransforms() {
-        
-        $this->projection = clone(Proj4php::$proj[$this->projName]);
+        $this->projection = new Proj4php::$proj[$this->projName];
         Proj4php::extend( $this->projection, $this );
         $this->init();
-        
+
         // initiate depending class
         if( false !== ($dependsOn = isset($this->projection->dependsOn) && !empty($this->projection->dependsOn) ? $this->projection->dependsOn : false) ) {
-            Proj4php::extend( Proj4php::$proj[$dependsOn], $this->projection) && 
+            Proj4php::extend( Proj4php::$proj[$dependsOn], $this->projection) &&
             Proj4php::$proj[$dependsOn]->init() &&
             Proj4php::extend( $this->projection, Proj4php::$proj[$dependsOn] );
         }
-        
+
         $this->readyToUse = true;
     }
 

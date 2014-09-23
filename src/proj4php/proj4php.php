@@ -183,23 +183,8 @@ class Proj4php {
             return $point;
         }
 
-        // Workaround for datum shifts towgs84, if either source or destination projection is not wgs84
-        // WS, 2014/03/26 changed from recursive call of function transform to seperate function doTransform 
-        if (isset($source->datum) && isset($dest->datum) &&
-           ($source->datum->datum_type == Proj4php::$common->PJD_3PARAM || $source->datum->datum_type == Proj4php::$common->PJD_7PARAM || (isset($source->datumCode) && $source->datumCode != "WGS84")) &&
-           ($dest->datum->datum_type == Proj4php::$common->PJD_3PARAM || $dest->datum->datum_type == Proj4php::$common->PJD_7PARAM || (isset($dest->datumCode) && $dest->datumCode != "WGS84"))) {
-           $pointWGS84 = $this->doTransform($source,Proj4php::$WGS84, $point);
-           $point = $this->doTransform(Proj4php::$WGS84, $dest, $pointWGS84);
-        }
-        else
-        {
-           $point = $this->doTransform($source, $dest, $point);
-        }
-        return $point;
-    }
-
-    public function doTransform( $source, $dest, $point ) {
         // DGR, 2010/11/12
+
         if( $source->axis != "enu" ) {
             $this->adjust_axis( $source, false, $point );
         }
@@ -209,13 +194,13 @@ class Proj4php {
             $point->x *= Proj4php::$common->D2R;  // convert degrees to radians
             $point->y *= Proj4php::$common->D2R;
         } else {
-            if( isset($source->to_meter) ) {
+            if( isset($source->to_meter) )
+            {
                 $point->x *= $source->to_meter;
                 $point->y *= $source->to_meter;
             }
             $source->inverse( $point ); // Convert Cartesian to longlat
         }
-
         // Adjust for the prime meridian if necessary
         if( isset( $source->from_greenwich ) ) {
             $point->x += $source->from_greenwich;
