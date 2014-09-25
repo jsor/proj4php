@@ -25,7 +25,7 @@ class Proj4php {
     public static $WGS84 = null;
     public static $primeMeridian = array( );
     public static $proj = array( );
-    
+    public $msg = '';
     /**
      * Property: defsLookupService
      * service to retreive projection definition parameters from
@@ -144,7 +144,7 @@ class Proj4php {
         self::$primeMeridian["athens"] = 23.7163375;       //"23d42'58.815\"E",
         self::$primeMeridian["oslo"] = 10.722916666667;  //"10d43'22.5\"E"
     }
-    
+
     /**
      *
      */
@@ -174,7 +174,9 @@ class Proj4php {
      *     projected Cartesian (x,y), but should always have x,y properties.
      */
     public function transform( $source, $dest, $point) {
-       if( !$source->readyToUse ) {
+
+        $this->msg = '';
+        if( !$source->readyToUse ) {
             self::reportError( "Proj4php initialization for:" . $source->srsCode . " not yet complete" );
             return $point;
         }
@@ -232,6 +234,7 @@ class Proj4php {
         }
 
         return $point;
+
     }
 
     /** datum_transform()
@@ -301,8 +304,8 @@ class Proj4php {
         */
         return $point;
     }
-    
-    
+
+
     /**
      * Function: adjust_axis
      * Normalize or de-normalized the x/y/z axes.  The normal form is "enu"
@@ -366,12 +369,11 @@ class Proj4php {
 
     /**
      * Function: reportError
-     * An internal method to report errors back to user. 
+     * An internal method to report errors back to user.
      * Override this in applications to report error messages or throw exceptions.
      */
     public static function reportError( $msg ) {
-        //console.log(msg);
-        echo $msg . "<br />\n";
+        throw(new Exception($msg));
     }
 
     /**
@@ -389,7 +391,6 @@ class Proj4php {
         }
         else {
             throw(new Exception( "File $filename could not be found or was not able to be loaded." ));
-            return false;
         }
     }
 
