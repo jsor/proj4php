@@ -23,7 +23,7 @@ class Proj4phpProj {
     /**
      * Property: projName
      * The projection class for $this projection, e.g. lcc (lambert conformal conic,
-     * or merc for mercator).  These are exactly equivalent to their Proj4 
+     * or merc for mercator).  These are exactly equivalent to their Proj4
      * counterparts.
      */
     public $projName = null;
@@ -66,7 +66,7 @@ class Proj4phpProj {
     
     /**
      *
-     * @var type 
+     * @var type
      */
     protected $wktRE = '/^(\w+)\[(.*)\]$/';
 
@@ -81,7 +81,6 @@ class Proj4phpProj {
     public function __construct( $srsCode ) {
         
         $this->srsCodeInput = $srsCode;
-
         //check to see if $this is a WKT string
         if( (strpos( $srsCode, 'GEOGCS' ) !== false) ||
             (strpos( $srsCode, 'GEOCCS' ) !== false) ||
@@ -139,14 +138,13 @@ class Proj4phpProj {
     /**
      * Function: loadProjDefinition
      *    Loads the coordinate system initialization string if required.
-     *    Note that dynamic loading happens asynchronously so an application must 
+     *    Note that dynamic loading happens asynchronously so an application must
      *    wait for the readyToUse property is set to true.
      *    To prevent dynamic loading, include the defs through a script tag in
      *    your application.
      *
      */
     public function loadProjDefinition() {
-        
         //check in memory
         if( array_key_exists( $this->srsCode, Proj4php::$defs ) ) {
             $this->defsLoaded();
@@ -154,7 +152,7 @@ class Proj4phpProj {
         }
         //else check for def on the server
         $filename = dirname( __FILE__ ) . '/defs/' . strtoupper( $this->srsAuth ) . $this->srsProjNumber . '.php';
-        
+
         try {
             Proj4php::loadScript( $filename );
             $this->defsLoaded(); // succes
@@ -166,7 +164,7 @@ class Proj4phpProj {
 
     /**
      * Function: loadFromService
-     *    Creates the REST URL for loading the definition from a web service and 
+     *    Creates the REST URL for loading the definition from a web service and
      *    loads it.
      *
      *
@@ -191,6 +189,7 @@ class Proj4phpProj {
     public function defsLoaded() {
         
         $this->parseDefs();
+
         $this->loadProjCode( $this->projName );
     }
 
@@ -223,8 +222,7 @@ class Proj4phpProj {
      * An exception occurs if the projection is not found.
      */
     public function loadProjCode( $projName ) {
-        
-        if( array_key_exists( $projName, Proj4php::$proj ) ) {
+        if( array_key_exists( $projName, Proj4php::$proj )) {
             $this->initTransforms();
             return;
         }
@@ -284,19 +282,19 @@ class Proj4phpProj {
         $this->projection = new Proj4php::$proj[$this->projName];
         Proj4php::extend( $this->projection, $this );
         $this->init();
+      // initiate depending class
 
-        // initiate depending class
-        if( false !== ($dependsOn = isset($this->projection->dependsOn) && !empty($this->projection->dependsOn) ? $this->projection->dependsOn : false) ) {
+        if( false !== ($dependsOn = isset($this->projection->dependsOn) && !empty($this->projection->dependsOn) ? $this->projection->dependsOn : false) )
+        {
             Proj4php::extend( Proj4php::$proj[$dependsOn], $this->projection) &&
             Proj4php::$proj[$dependsOn]->init() &&
             Proj4php::extend( $this->projection, Proj4php::$proj[$dependsOn] );
         }
-
         $this->readyToUse = true;
     }
 
     /**
-     * 
+     *
      */
     public function init() {
         $this->projection->init();

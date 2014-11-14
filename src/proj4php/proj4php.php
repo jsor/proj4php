@@ -3,7 +3,7 @@
  * Author : Julien Moquet
  * 
  * Simple conversion from javascript to PHP of Proj4php by Mike Adair madairATdmsolutions.ca and Richard Greenwood rich@greenwoodmap.com 
- *                     
+ *
  * License: LGPL as per: http://www.gnu.org/copyleft/lesser.html 
  */
 $dir = dirname( __FILE__ );
@@ -15,7 +15,6 @@ require_once($dir . "/proj4phpLongLat.php");
 require_once($dir . "/proj4phpPoint.php");
 
 class Proj4php {
-
     protected $defaultDatum = 'WGS84';
     public static $ellipsoid = array( );
     public static $common = null;
@@ -174,7 +173,6 @@ class Proj4php {
      *     projected Cartesian (x,y), but should always have x,y properties.
      */
     public function transform( $source, $dest, $point) {
-
         $this->msg = '';
         if( !$source->readyToUse ) {
             self::reportError( "Proj4php initialization for:" . $source->srsCode . " not yet complete" );
@@ -233,7 +231,9 @@ class Proj4php {
             $this->adjust_axis( $dest, true, $point );
         }
 
-        return $point;
+        // Nov 2014 - changed Werner Schäffer
+        // clone point to avoid a lot of problems
+        return (clone $point);
 
     }
 

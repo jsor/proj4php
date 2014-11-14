@@ -55,7 +55,7 @@ class proj4phpPoint {
      * Return:
      * {Proj4js}.Point the cloned point.
      */
-    public function _clone() {
+    public function __clone() {
         return new Proj4phpPoint( $this->x, $this->y, $this->z );
     }
 
