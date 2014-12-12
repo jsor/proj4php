@@ -36,8 +36,8 @@ class Proj4phpProjGstmerc {
 
         $L = $this->rs * ($lon - $this->lc);
         $Ls = $this->cp + ($this->rs * Proj4php::$common->latiso( $this->e, $lat, sin( $lat ) ));
-        $lat1 = asin( sin( $L ) / Proj4php::$common . cosh( $Ls ) );
-        $Ls1 = Proj4php::$common . latiso( 0.0, $lat1, sin( $lat1 ) );
+        $lat1 = asin( sin( $L ) / Proj4php::$common->cosh( $Ls ) );
+        $Ls1 = Proj4php::$common->latiso( 0.0, $lat1, sin( $lat1 ) );
         $p->x = $this->xs + ($this->n2 * $Ls1);
         $p->y = $this->ys + ($this->n2 * atan( Proj4php::$common->sinh( $Ls ) / cos( $L ) ));
         return $p;
@@ -50,11 +50,11 @@ class Proj4phpProjGstmerc {
         $x = $p->x;
         $y = $p->y;
 
-        $L = atan( Proj4php::$common . sinh( ($x - $this->xs) / $this->n2 ) / cos( ($y - $this->ys) / $this->n2 ) );
-        $lat1 = asin( sin( ($y - $this->ys) / $this->n2 ) / Proj4php::$common . cosh( ($x - $this->xs) / $this->n2 ) );
-        $LC = Proj4php::$common . latiso( 0.0, $lat1, sin( $lat1 ) );
+        $L = atan( Proj4php::$common->sinh( ($x - $this->xs) / $this->n2 ) / cos( ($y - $this->ys) / $this->n2 ) );
+        $lat1 = asin( sin( ($y - $this->ys) / $this->n2 ) / Proj4php::$common->cosh( ($x - $this->xs) / $this->n2 ) );
+        $LC = Proj4php::$common->latiso( 0.0, $lat1, sin( $lat1 ) );
         $p->x = $this->lc + $L / $this->rs;
-        $p->y = Proj4php::$common . invlatiso( $this->e, ($LC - $this->cp) / $this->rs );
+        $p->y = Proj4php::$common->invlatiso( $this->e, ($LC - $this->cp) / $this->rs );
         return $p;
     }
 

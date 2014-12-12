@@ -8,7 +8,7 @@
  */
 class Proj4phpProjSterea {
 
-    protected $dependsOn = 'gauss';
+    public $dependsOn = 'gauss';
     
     /**
      *

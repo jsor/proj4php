@@ -108,7 +108,7 @@ class Proj4phpProjOrtho {
         if( $rh > $this->a + .0000001 ) {
             Proj4php::reportError( "orthoInvDataError" );
         }
-        $z = Proj4php::$common . asinz( $rh / $this->a );
+        $z = Proj4php::$common->asinz( $rh / $this->a );
 
         $sinz = sin( $z );
         $cosz = cos( $z );
@@ -117,7 +117,7 @@ class Proj4phpProjOrtho {
         if( abs( $rh ) <= Proj4php::$common->EPSLN ) {
             $lat = $this->lat0;
         }
-        $lat = Proj4php::$common . asinz( $cosz * $this->sin_p14 + ($p->y * $sinz * $this->cos_p14) / $rh );
+        $lat = Proj4php::$common->asinz( $cosz * $this->sin_p14 + ($p->y * $sinz * $this->cos_p14) / $rh );
         $con = abs( $this->lat0 ) - Proj4php::$common->HALF_PI;
         if( abs( con ) <= Proj4php::$common->EPSLN ) {
             if( $this->lat0 >= 0 ) {

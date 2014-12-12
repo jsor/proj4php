@@ -63,7 +63,7 @@ class Proj4phpProjVandg {
             $x = $this->x0 + $this->R * $dlon;
             $y = $this->y0;
         }
-        $theta = Proj4php::$common . asinz( 2.0 * abs( $lat / Proj4php::$common->PI ) );
+        $theta = Proj4php::$common->asinz( 2.0 * abs( $lat / Proj4php::$common->PI ) );
         if( (abs( $dlon ) <= Proj4php::$common->EPSLN) || (abs( abs( $lat ) - Proj4php::$common->HALF_PI ) <= Proj4php::$common->EPSLN) ) {
             $x = $this->x0;
             if( $lat >= 0 ) {

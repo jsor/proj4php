@@ -48,9 +48,9 @@ class Proj4phpProjGauss {
         $DEL_TOL = 1e-14;
         $lon = $p->x / $this->C;
         $lat = $p->y;
-        $num = pow( tan( 0.5 * $lat + Proj4php::$common . FORTPI ) / $this->K, 1. / $this->C );
+        $num = pow( tan( 0.5 * $lat + Proj4php::$common->FORTPI ) / $this->K, 1. / $this->C );
         
-        for( $i = Proj4php::$common . MAX_ITER; $i > 0; --$i ) {
+        for( $i = Proj4php::$common->MAX_ITER; $i > 0; --$i ) {
             $lat = 2.0 * atan( $num * Proj4php::$common->srat( $this->e * sin( $p->y ), -0.5 * $this->e ) ) - Proj4php::$common->HALF_PI;
             if( abs( $lat - $p->y ) < $DEL_TOL )
                 break;
