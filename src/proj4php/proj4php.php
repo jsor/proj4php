@@ -64,7 +64,6 @@ class Proj4php {
         self::$wktProjections["Lambert Tangential Conformal Conic Projection"] = "lcc";
         self::$wktProjections["Mercator"] = "merc";
         self::$wktProjections["Mercator_1SP"] = "merc";
-        self::$wktProjections["Transverse_Mercator"] = "tmerc";
         self::$wktProjections["Transverse Mercator"] = "tmerc";
         self::$wktProjections["Lambert Azimuthal Equal Area"] = "laea";
         self::$wktProjections["Universal Transverse Mercator System"] = "utm";
@@ -231,7 +230,7 @@ class Proj4php {
             $this->adjust_axis( $dest, true, $point );
         }
 
-        // Nov 2014 - changed Werner Schäffer
+        // Nov 2014 - changed Werner Schï¿½ffer
         // clone point to avoid a lot of problems
         return (clone $point);
 
